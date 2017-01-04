@@ -1,14 +1,13 @@
 <?php
-namespace Fungio\GoogleCalendarBundle;
+namespace Bpeh\GoogleCalendarBundle;
 
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 
 /**
- * Class FungioGoogleCalendarBundle
- * @package Fungio\GoogleCalendarBundle
+ * Class BpehGoogleCalendarBundle
+ * @package Bpeh\GoogleCalendarBundle
  *
- * @author Pierrick AUBIN <fungio76@gmail.com>
  */
-class FungioGoogleCalendarBundle extends Bundle
+class BpehGoogleCalendarBundle extends Bundle
 {
 }

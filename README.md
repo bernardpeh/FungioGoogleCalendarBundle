@@ -17,10 +17,25 @@ Click on "Download JSON" to get your client_secret.json
 ## Installation
 ### Step 1: Install GoogleCalendarBundle
 
-Run
+In composer.json
 
-```bash
-composer require fungio/google-calendar-bundle:dev-master
+```
+"repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/bernardpeh/GoogleCalendarBundle"
+        }
+],
+"require": {
+  "bpeh/google-calendar-bundle": "dev-master"
+  ...
+}
+```
+
+then
+
+```
+composer update
 ```
 
 ### Step 2: Enable the bundle
@@ -33,23 +48,20 @@ public function registerBundles()
 {
     $bundles = [
         // ...
-        new Fungio\GoogleCalendarBundle\FungioGoogleCalendarBundle()
+        new Bpeh\GoogleCalendarBundle\BpehGoogleCalendarBundle()
     ];
 }
 ```
 
 ### Step 3: Configuration
 
-Copy your client_secret.json file for example in app/Resources/GoogleCalendarBundle/client_secret.json
-
 ```yml
 # app/config/parameters.yml
 
-fungio_google_calendar:
-    google_calendar:
-        application_name: "Google Calendar"
-        credentials_path: "%kernel.root_dir%/.credentials/calendar.json"
-        client_secret_path: "%kernel.root_dir%/Resources/GoogleCalendarBundle/client_secret.json"
+bpeh_google_calendar:
+    application_name: "Google Calendar"
+    credentials_path: "%kernel.root_dir%/.credentials/calendar.json"
+    client_secret_path: "%kernel.root_dir%/Resources/GoogleCalendarBundle/client_secret.json"
 ```
 
 
@@ -60,7 +72,7 @@ fungio_google_calendar:
 // in a controller
 $request = $this->getMasterRequest();
 
-$googleCalendar = $this->get('fungio.google_calendar');
+$googleCalendar = $this->get('bpeh.google_calendar');
 $googleCalendar->setRedirectUri($redirectUri);
 
 if ($request->query->has('code') && $request->get('code')) {
