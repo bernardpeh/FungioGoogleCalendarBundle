@@ -24,12 +24,8 @@
   },
   "minimum-stability": "dev",
   "autoload": {
-    "psr-0": {
-      "Bpeh\\GoogleCalendarBundle\\": ""
+    "psr-4": { 
+      "Bpeh\\GoogleCalendarBundle\\": "" 
     }
-  },
-  "target-dir": "Bpeh/GoogleCalendarBundle",
-  "config": {
-    "bin-dir": "bin/"
   }
 }
