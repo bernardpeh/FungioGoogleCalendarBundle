@@ -29,11 +29,6 @@ class GoogleCalendar
     protected $scopes;
 
     /**
-     * @var string
-     */
-    protected $redirectUri;
-
-    /**
      * @var array
      */
     protected $parameters = [];
@@ -42,11 +37,6 @@ class GoogleCalendar
      * @var string
      */
     protected $accessToken;
-
-    /**
-     * @var string
-     */
-    protected $refreshToken;
 
     /**
      * @var bool
@@ -122,14 +112,6 @@ class GoogleCalendar
     }
 
     /**
-     * @param $redirectUri
-     */
-    public function setRedirectUri($redirectUri)
-    {
-        $this->redirectUri = $redirectUri;
-    }
-
-    /**
      * @param $parameters
      */
     public function setParameters($parameters)
@@ -145,25 +127,6 @@ class GoogleCalendar
         if ($accessToken != "") {
             $this->accessToken = $accessToken;
         }
-    }
-
-    /**
-     * @param string $refreshToken
-     */
-    public function setRefreshToken($refreshToken)
-    {
-        if ($refreshToken != "") {
-            $this->refreshToken = $refreshToken;
-        }
-    }
-
-    /**
-     * clear tokens
-     */
-    public function clearTokens()
-    {
-        $this->accessToken = "";
-        $this->refreshToken = "";
     }
 
     /**
@@ -195,18 +158,9 @@ class GoogleCalendar
     }
 
     /**
-     * @return string
-     */
-    public function getRefreshToken()
-    {
-        return $this->refreshToken;
-    }
-
-    /**
-     * @param null      $authCode
-     * @param bool|true $fromFile
-     *
-     * @return \Google_Client|string
+     * @param null $authCode
+     * @param bool $fromFile
+     * @return \Google_Client
      */
     public function getClient($authCode = null, $fromFile = true)
     {
@@ -217,84 +171,22 @@ class GoogleCalendar
         $client->setScopes($this->scopes);
         $client->setAuthConfig($this->clientSecretPath);
         $client->setAccessType('offline');
-        $client->setApprovalPrompt('force');
-        $client->setState($this->base64UrlEncode(json_encode($this->parameters)));
 
         // Load previously authorized credentials from a file.
         $credentialsPath = $this->credentialsPath;
         if ($fromFile) {
             if (file_exists($credentialsPath)) {
                 $accessToken = json_decode(file_get_contents($credentialsPath), true);
-            } else {
-                // Request authorization from the user.
-                if ($this->redirectUri) {
-                    $client->setRedirectUri($this->redirectUri);
-                }
-
-                if ($authCode != null) {
-                    $accessToken = $client->fetchAccessTokenWithAuthCode($authCode);
-
-                    if (!file_exists(dirname($credentialsPath))) {
-                        mkdir(dirname($credentialsPath), 0700, true);
-                    }
-                    file_put_contents($credentialsPath, json_encode($accessToken));
-                } else {
-                    return $client->createAuthUrl();
-                }
-            }
-        } else {
-            if ($this->accessToken != null) {
-                $accessToken = json_decode($this->accessToken, true);
-            } else {
-                // Request authorization from the user.
-                if ($this->redirectUri) {
-                    $client->setRedirectUri($this->redirectUri);
-                }
-
-                if ($authCode != null) {
-                    $accessToken = $client->fetchAccessTokenWithAuthCode($authCode);
-                    $this->accessToken = json_encode($accessToken);
-                } else {
-                    return $client->createAuthUrl();
-                }
-            }
-        }
-        $client->setAccessToken($accessToken);
-
-        if ($client->getRefreshToken()) {
-            $this->refreshToken = $client->getRefreshToken();
-        }
-
-        // Refresh the token if it's expired.
-        if ($client->isAccessTokenExpired()) {
-            if ($this->refreshToken) {
-                $refreshToken = $this->refreshToken;
-            } else {
-                $refreshToken = $client->getRefreshToken();
-            }
-
-            if ($refreshToken) {
-                $res = $client->fetchAccessTokenWithRefreshToken($refreshToken);
-                if (!isset($res['access_token'])) {
-                    return $client->createAuthUrl();
-                }
-                if ($fromFile) {
+                $client->setAccessToken($accessToken);
+                // Refresh the token if it's expired.
+                if ($client->isAccessTokenExpired()) {
+                    $client->fetchAccessTokenWithRefreshToken($client->getRefreshToken());
                     file_put_contents($credentialsPath, json_encode($client->getAccessToken()));
-                } else {
-                    $this->accessToken = json_encode($client->getAccessToken());
                 }
-            } else {
-                if ($fromFile) {
-                    unlink($credentialsPath);
-                } else {
-                    $this->accessToken = null;
-                }
-
-                return $client->createAuthUrl();
+                return $client;
             }
         }
-
-        return $client;
+        exit('Access token not found!!');
     }
 
     /**
@@ -560,6 +452,7 @@ class GoogleCalendar
     public function getCalendarService()
     {
         $client = $this->getClient(null, $this->fromFile);
+
         if (!is_string($client)) {
             return new \Google_Service_Calendar($client);
         }
