@@ -1,12 +1,10 @@
 <?php
 
-namespace Fungio\GoogleCalendarBundle\Service;
+namespace Bpeh\GoogleCalendarBundle\Service;
 
 /**
  * Class GoogleCalendar
- * @package Fungio\GoogleCalendarBundle\Service
- *
- * @author  Pierrick AUBIN <fungio76@gmail.com>
+ * @package Bpeh\GoogleCalendarBundle\Service
  */
 class GoogleCalendar
 {
