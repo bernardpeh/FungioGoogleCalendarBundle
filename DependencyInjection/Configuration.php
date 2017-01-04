@@ -19,13 +19,9 @@ class Configuration implements ConfigurationInterface
         $rootNode = $treeBuilder->root('bpeh_google_calendar');
         $rootNode
             ->children()
-                ->arrayNode('google_calendar')->addDefaultsIfNotSet()
-                    ->children()
-                        ->scalarNode('application_name')->end()
-                        ->scalarNode('credentials_path')->end()
-                        ->scalarNode('client_secret_path')->end()
-                    ->end()
-                ->end()
+                ->scalarNode('application_name')->end()
+                ->scalarNode('credentials_path')->end()
+                ->scalarNode('client_secret_path')->end()
             ->end()
         ;
         return $treeBuilder;
