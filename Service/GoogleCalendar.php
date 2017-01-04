@@ -39,11 +39,6 @@ class GoogleCalendar
     protected $accessToken;
 
     /**
-     * @var bool
-     */
-    protected $fromFile = true;
-
-    /**
      * construct
      */
     public function __construct()
@@ -159,13 +154,10 @@ class GoogleCalendar
 
     /**
      * @param null $authCode
-     * @param bool $fromFile
      * @return \Google_Client
      */
-    public function getClient($authCode = null, $fromFile = true)
+    public function getClient()
     {
-        $this->fromFile = $fromFile;
-
         $client = new \Google_Client();
         $client->setApplicationName($this->applicationName);
         $client->setScopes($this->scopes);
@@ -174,19 +166,19 @@ class GoogleCalendar
 
         // Load previously authorized credentials from a file.
         $credentialsPath = $this->credentialsPath;
-        if ($fromFile) {
-            if (file_exists($credentialsPath)) {
+        if (file_exists($credentialsPath)) {
+            $accessToken = json_decode(file_get_contents($credentialsPath), true);
+            $client->setAccessToken($accessToken);
+            // Refresh the token if it's expired.
+            if ($client->isAccessTokenExpired()) {
+                $command = 'php '.__DIR__.'/init_google_calendar.php';
+                exec($command, $output);
+                // set token
                 $accessToken = json_decode(file_get_contents($credentialsPath), true);
                 $client->setAccessToken($accessToken);
-                // Refresh the token if it's expired.
-                if ($client->isAccessTokenExpired()) {
-                    $client->fetchAccessTokenWithRefreshToken($client->getRefreshToken());
-                    file_put_contents($credentialsPath, json_encode($client->getAccessToken()));
-                }
-                return $client;
             }
         }
-        exit('Access token not found!!');
+        return $client;
     }
 
     /**
@@ -451,7 +443,7 @@ class GoogleCalendar
      */
     public function getCalendarService()
     {
-        $client = $this->getClient(null, $this->fromFile);
+        $client = $this->getClient();
 
         if (!is_string($client)) {
             return new \Google_Service_Calendar($client);

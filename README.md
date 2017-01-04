@@ -14,11 +14,6 @@ Create an oauth ID. Do not forget the redirect Uri.
 
 Click on "Download JSON" to get your client_secret.json
 
-Get the sample php to create the credentials.json. Make sure this credentials.json is WRITABLE.
-
-https://developers.google.com/google-apps/calendar/quickstart/php
-
-
 ## Installation
 
 ### Step 1: Install GoogleCalendarBundle
@@ -62,34 +57,33 @@ public function registerBundles()
 ### Step 3: Configuration
 
 ```yml
-# app/config/parameters.yml
+# app/config/config.yml
 
+# google calendar
 bpeh_google_calendar:
     application_name: "Google Calendar"
-    credentials_path: "%kernel.root_dir%/.credentials/calendar.json"
-    client_secret_path: "%kernel.root_dir%/Resources/GoogleCalendarBundle/client_secret.json"
+    credentials_path: "%kernel.root_dir%/config/google_credentials.json"
+    client_secret_path: "%kernel.root_dir%/config/google_client_secret.json"
 ```
 
+where google_client_secret.json is the file downloaded from google console previously
+
+and
+
+google_credentials.json is to be generated dynamically by running init_google_calendar.php from the command line. init_google_calendar.php can be found under the Service folder. You only need to run this once from the command line, after which it will be dynamically generated when the token expires.
+
+```
+# follow the prompts after running this line
+php init_google_calendar.php
+```
+
+**Make sure this google_credentials.json is WRITABLE.**
 
 ## Example
 
 ``` php
 <?php
 // in a controller
-$request = $this->getMasterRequest();
-
 $googleCalendar = $this->get('bpeh.google_calendar');
-$googleCalendar->setRedirectUri($redirectUri);
-
-if ($request->query->has('code') && $request->get('code')) {
-    $client = $googleCalendar->getClient($request->get('code'));
-} else {
-    $client = $googleCalendar->getClient();
-}
-
-if (is_string($client)) {
-    return new RedirectResponse($client);
-}
-
 $events = $googleCalendar->getEventsForDate('primary', new \DateTime('now');
 ```
