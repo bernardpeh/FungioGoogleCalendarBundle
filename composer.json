@@ -1,5 +1,5 @@
 {
-  "name": "fungio/google-calendar-bundle",
+  "name": "bpeh/google-calendar-bundle",
   "type": "symfony-bundle",
   "description": "Provides a google calendar integration for your Symfony 3 Project.",
   "keywords": [
@@ -8,8 +8,8 @@
   "license": "MIT",
   "authors": [
     {
-      "name": "Pierrick AUBIN",
-      "email": "pierrick.aubin@gmail.com"
+      "name": "Bernard Peh",
+      "email": "bpeh777@gmail.com"
     }
   ],
   "require": {
@@ -25,10 +25,10 @@
   "minimum-stability": "dev",
   "autoload": {
     "psr-0": {
-      "Fungio\\GoogleCalendarBundle\\": ""
+      "Bpeh\\GoogleCalendarBundle\\": ""
     }
   },
-  "target-dir": "Fungio/GoogleCalendarBundle",
+  "target-dir": "Bpeh/GoogleCalendarBundle",
   "config": {
     "bin-dir": "bin/"
   }

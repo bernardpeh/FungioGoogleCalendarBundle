@@ -1,14 +1,12 @@
 <?php
-namespace Fungio\GoogleCalendarBundle\DependencyInjection;
+namespace Bpeh\GoogleCalendarBundle\DependencyInjection;
 
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
 
 /**
  * Class Configuration
- * @package Fungio\GoogleCalendarBundle\DependencyInjection
- *
- * @author Pierrick AUBIN <fungio76@gmail.com>
+ * @package Bpeh\GoogleCalendarBundle\DependencyInjection
  */
 class Configuration implements ConfigurationInterface
 {
@@ -18,7 +16,7 @@ class Configuration implements ConfigurationInterface
     public function getConfigTreeBuilder()
     {
         $treeBuilder = new TreeBuilder();
-        $rootNode = $treeBuilder->root('fungio_google_calendar');
+        $rootNode = $treeBuilder->root('bpeh_google_calendar');
         $rootNode
             ->children()
                 ->arrayNode('google_calendar')->addDefaultsIfNotSet()

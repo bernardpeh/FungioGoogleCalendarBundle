@@ -1,5 +1,5 @@
 <?php
-namespace Fungio\GoogleCalendarBundle\DependencyInjection;
+namespace Bpeh\GoogleCalendarBundle\DependencyInjection;
 
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\Config\FileLocator;
@@ -7,12 +7,10 @@ use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
 
 /**
- * Class FungioGoogleCalendarExtension
- * @package Fungio\GoogleCalendarBundle\DependencyInjection
- *
- * @author Pierrick AUBIN <fungio76@gmail.com>
+ * Class BpehGoogleCalendarExtension
+ * @package Bpeh\GoogleCalendarBundle\DependencyInjection
  */
-class FungioGoogleCalendarExtension extends Extension
+class BpehGoogleCalendarExtension extends Extension
 {
     /**
      * {@inheritdoc}
@@ -23,8 +21,8 @@ class FungioGoogleCalendarExtension extends Extension
         $loader = new XmlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
         $loader->load('services.xml');
 
-        if ($container->hasDefinition('fungio.google_calendar')) {
-            $definition = $container->getDefinition('fungio.google_calendar');
+        if ($container->hasDefinition('bpeh.google_calendar')) {
+            $definition = $container->getDefinition('bpeh.google_calendar');
             if (isset($config['google_calendar']['application_name'])) {
                 $definition
                     ->addMethodCall('setApplicationName', [$config['google_calendar']['application_name']]);
