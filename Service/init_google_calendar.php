@@ -56,7 +56,9 @@ function getClient() {
   // Refresh the token if it's expired.
   if ($client->isAccessTokenExpired()) {
     $client->fetchAccessTokenWithRefreshToken($client->getRefreshToken());
-    // file_put_contents($credentialsPath, json_encode($client->getAccessToken()));
+      $newToken = $client->getAccessToken();
+      $newToken['refresh_token'] = $accessToken['refresh_token'];
+      file_put_contents($credentialsPath, json_encode($newToken));
   }
   return $client;
 }
