@@ -1,5 +1,7 @@
 # Google Calendar Bundle
 
+I think google calendar is still buggy at the time of writing. use it at your own discretion.
+
 This bundle use Google API for list, create, or update events in Google Calendar.
 
 Please feel free to contribute, to fork, to send merge request and to create ticket.
