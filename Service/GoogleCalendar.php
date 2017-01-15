@@ -153,7 +153,6 @@ class GoogleCalendar
     }
 
     /**
-     * @param null $authCode
      * @return \Google_Client
      */
     public function getClient()
@@ -179,6 +178,24 @@ class GoogleCalendar
             }
         }
         return $client;
+    }
+
+    /**
+     * @param \DateTime $datetime
+     * @param null $allDay
+     * @return \Google_Service_Calendar_EventDateTime
+     */
+    public function formatDateTime(\DateTime $datetime, $allDay=null)
+    {
+        $google_datetime = new \Google_Service_Calendar_EventDateTime();
+        if ($allDay) {
+            $formattedStart = $datetime->format('Y-m-d');
+            $google_datetime->setDate($formattedStart);
+        } else {
+            $formattedStart = $datetime->format(\DateTime::RFC3339);
+            $google_datetime->setDateTime($formattedStart);
+        }
+        return $google_datetime;
     }
 
     /**
@@ -212,24 +229,9 @@ class GoogleCalendar
         $event = new \Google_Service_Calendar_Event();
         // Set the title
         $event->setSummary($eventSummary);
+        $event->setStart($this->formatDateTime($eventStart, $allDay));
+        $event->setEnd($this->formatDateTime($eventEnd, $allDay));
 
-        $start = new \Google_Service_Calendar_EventDateTime();
-        $end = new \Google_Service_Calendar_EventDateTime();
-        if ($allDay) {
-            $formattedStart = $eventStart->format('Y-m-d');
-            $formattedEnd = $eventEnd->format('Y-m-d');
-            $start->setDate($formattedStart);
-            $end->setDate($formattedEnd);
-        } else {
-            $formattedStart = $eventStart->format(\DateTime::RFC3339);
-            $formattedEnd = $eventEnd->format(\DateTime::RFC3339);
-            $start->setDateTime($formattedStart);
-            $end->setDateTime($formattedEnd);
-        }
-        $event->setStart($start);
-        $event->setEnd($end);
-        // Default status for newly created event
-        $event->setStatus('tentative');
         // Set event's description
         $event->setDescription($eventDescription);
         // Attendees - permit to manage the event's status
@@ -298,14 +300,14 @@ class GoogleCalendar
     }
 
     /**
-     * Update an event
-     *
-     * @param string                         $calendarId
-     * @param \Google_Service_Calendar_Event $event
+     * @param $calendarId
+     * @param $event_id
+     * @param $event
+     * @return \Google_Service_Calendar_Event
      */
-    public function updateEvent($calendarId, $event)
+    public function updateEvent($calendarId, $event_id, $event)
     {
-        $this->getCalendarService()->events->update($calendarId, $event->getId(), $event);
+        return $this->getCalendarService()->events->update($calendarId, $event_id, $event);
     }
 
     /**
